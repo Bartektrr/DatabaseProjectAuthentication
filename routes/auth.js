@@ -58,17 +58,7 @@ router.post('/signup', function(req, res, next) {
   var salt = crypto.randomBytes(16);
   crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
     if (err) { return next(err); }
-    db.sequelize.query(
-        'INSERT INTO users (FirstName, LastName, Username, EncryptedPassword, Salt) VALUES (:firstname, :lastname, :username, :password, :salt)', 
-    { 
-        replacements: { 
-            firstname: req.body.firstname,
-            lastname: req.body.lastname,
-            username: req.body.username,
-            password: hashedPassword,
-            salt: salt
-        },
-    })
+    userService.create(req.body.firstname, req.body.lastname, req.body.username, salt, hashedPassword )
     res.redirect('/login');
   });
 });
