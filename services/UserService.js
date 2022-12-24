@@ -7,11 +7,14 @@ class UserService {
         this.Reservation = db.Reservation;
     }
 
-    async create(firstName, lastName) {
+    async create(firstName, lastName, username, salt, encryptedPassword) {
         return this.User.create(
             {
                 FirstName: firstName,
-                LastName: lastName
+                LastName: lastName,
+                Username: username,
+                Salt: salt,
+                EncryptedPassword: encryptedPassword
             }
         ) 
     }
