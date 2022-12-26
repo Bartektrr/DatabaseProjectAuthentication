@@ -35,19 +35,6 @@ class RoomService {
     }
 
     async rentARoom(userId, roomId, startDate, endDate) {
-        // const rooms = await this.client.query(
-        //     'SELECT * FROM Reservations WHERE RoomId = :roomId AND' +
-        //     '((StartDate < :startDate AND EndDate > :startDate) OR (StartDate < :endDate AND EndDate > :endDate)' + 
-        //     '((StartDate < :startDate AND EndDate > :endDate) OR (StartDate > :startDate AND EndDate < :endDate))',
-        //     {
-        //       replacements: { 
-        //         roomId: roomId,
-        //         startDate: startDate,
-        //         endDate: endDate
-        //     },
-        //       type: QueryTypes.SELECT
-        // });
-        // console.log(rooms);
         return this.Reservation.create(
             {
                 RoomId: roomId,
