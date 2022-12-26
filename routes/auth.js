@@ -23,7 +23,7 @@ passport.use(new LocalStrategy(function verify(username, password, cb) {
 
 passport.serializeUser(function(user, cb) {
   process.nextTick(function() {
-    cb(null, { id: user.id, username: user.Username, role: user.Role });
+    cb(null, { id: user.id, username: user.username });
   });
 });
 
@@ -35,8 +35,7 @@ passport.deserializeUser(function(user, cb) {
 
 var router = express.Router();
 router.get('/login', function(req, res, next) {
-  const username = req.user?.username;
-  res.render('login', { username });
+  res.render('login');
 });
 router.post('/login/password', passport.authenticate('local', {
   successReturnToOrRedirect: '/',
