@@ -11,7 +11,7 @@ router.get('/:hotelId', async function(req, res, next) {
   const rooms =  await roomService.getHotelRooms(req.params.hotelId);
   rooms.map(room => room.Users = room.Users.filter(user => user.id == 1).length > 0)
   const userId = req.user?.id ?? 0;
-  const isAdmin = req.user.role === "Admin";
+  const isAdmin = req.user?.role === "Admin";
   res.render('rooms', { rooms: rooms, userId, hotelId: req.params.hotelId, isAdmin});
 });
 
@@ -19,7 +19,7 @@ router.get('/', async function(req, res, next) {
     const rooms = await roomService.get();
     rooms.map(room => room.Users = room.Users.filter(user => user.id == 1).length > 0)
     const userId = req.user?.id ?? 0;
-    const isAdmin = req.user.role === "Admin"
+    const isAdmin = req.user?.role === "Admin"
     res.render('rooms', { rooms: rooms, userId, isAdmin});
 });
 
