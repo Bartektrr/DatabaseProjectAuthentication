@@ -1,3 +1,5 @@
+const Sequelize = require('sequelize')
+
 class HotelService {
     constructor(db) {
         this.client = db.sequelize;
@@ -12,16 +14,20 @@ class HotelService {
                 Name: name,
                 Location: location
             }
-        ) 
+        ).catch(function (err) {
+            console.log(err);
+        }); 
     }
 
     async get() {
         return this.Hotel.findAll({
             where: {}
-        })
+        }).catch(function (err) {
+            console.log(err);
+        });
     }
 
-    async getHotelDetails(hotelId) {
+    async getHotelDetails(hotelId, userId) {
         const hotel =  await this.Hotel.findOne({
             where: {
                 id: hotelId
@@ -32,17 +38,31 @@ class HotelService {
                     attributes: ['Value']
                 }            
             },
+        }).catch(function (err) {
+            console.log(err);
         });
-        hotel.avg = hotel.Users.map(x => x.Rate.dataValues.Value)
-                               .reduce((a, b) => a + b, 0) / hotel.Users.length;
-        hotel.rated = hotel.Users.filter(x=> x.dataValues.id == 1).length > 0;
+        if(hotel != null) {
+            hotel.avg = hotel.Users.map(x => x.Rate.dataValues.Value)
+            .reduce((a, b) => a + b, 0) / hotel.Users.length;
+            hotel.rated = hotel.Users.filter(x=> x.dataValues.id == userId).length > 0;
+        }
         return hotel
     }
     
+    async getBestRate() {
+        return await this.Rate.findOne({
+            order: [
+                ['Value', 'Desc']
+            ]
+        })
+    }
+
     async deleteHotel(hotelId) {
         return this.Hotel.destroy({
             where: {id: hotelId}
-        })
+        }).catch(function (err) {
+            console.log(err);
+        });
     }
 
     async makeARate(userId, hotelId, value) {
@@ -52,7 +72,9 @@ class HotelService {
                 HotelId: hotelId,
                 Value: value
             }
-        ) 
+        ).catch(function (err) {
+            console.log(err);
+        }) 
     }
 }
 module.exports = HotelService;

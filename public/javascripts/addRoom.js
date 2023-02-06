@@ -1,29 +1,26 @@
-async function makeRate(userId, url) {
-    let value = parseInt(prompt("Rate the hotel from 1 to 5"))
-    if (value === null)
-        return;
-    if (value < 1 || value > 5)
-        return;
+async function addRoom(url) {
+    let hotelId = parseInt(prompt("Provide hotel id"));
+    let capacity = parseInt(prompt("Provide the room Capacity"))
+    let price = parseFloat(prompt("Provide the room Price"))
     await fetch(url, {
         method: 'POST',
         headers: {
             'Content-type': 'application/json'
         },
         body: JSON.stringify({
-            UserId: userId,
-            Value: value
+            HotelId: hotelId, 
+            Capacity: capacity,
+            PricePerDay: price
         })
     }).then((response) => {
         if (response.ok) {
-            const resData = 'Made a rate';
-            alert(resData);
+            const resData = 'Created a new room';
             location.reload()
             return Promise.resolve(resData);    
         }
         return Promise.reject(response); 
     })
       .catch((response) => {
-        console.log(response);
         alert(response.statusText);
       });
 }

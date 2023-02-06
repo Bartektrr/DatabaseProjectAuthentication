@@ -27,7 +27,7 @@ body {
 	color: #111111;
 	min-width: 230px;
 	max-width: 550px;
-	margin: 0 auto;
+	margin: 0 auto!important;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	font-weight: 300;

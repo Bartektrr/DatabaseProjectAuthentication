@@ -5,18 +5,25 @@ var jsonParser = bodyParser.json()
 var RoomService = require("../services/RoomService")
 var db = require("../models");
 var roomService = new RoomService(db);
+var { checkIfAuthorized } = require("./authMiddlewares")
 /* GET rooms listing. */
 router.get('/:hotelId', async function(req, res, next) {
   const rooms =  await roomService.getHotelRooms(req.params.hotelId);
-  res.render('rooms', { rooms: rooms });
+  rooms.map(room => room.Users = room.Users.filter(user => user.id == 1).length > 0)
+  const userId = req.user?.id ?? 0;
+  const isAdmin = req.user.role === "Admin";
+  res.render('rooms', { rooms: rooms, userId, hotelId: req.params.hotelId, isAdmin});
 });
 
 router.get('/', async function(req, res, next) {
     const rooms = await roomService.get();
-    res.render('rooms', { rooms: rooms });
+    rooms.map(room => room.Users = room.Users.filter(user => user.id == 1).length > 0)
+    const userId = req.user?.id ?? 0;
+    const isAdmin = req.user.role === "Admin"
+    res.render('rooms', { rooms: rooms, userId, isAdmin});
 });
 
-router.post('/', jsonParser, async function(req, res, next) {
+router.post('/', checkIfAuthorized, jsonParser, async function(req, res, next) {
   let Capacity = req.body.Capacity;
   let PricePerDay = req.body.PricePerDay;
   let HotelId = req.body.HotelId;
@@ -24,16 +31,16 @@ router.post('/', jsonParser, async function(req, res, next) {
   res.end()
 });
 
-router.post('/reservation', jsonParser, async function(req, res, next) {
+router.post('/reservation', checkIfAuthorized, jsonParser, async function(req, res, next) {
     let userId = req.body.UserId;
     let roomId = req.body.RoomId;
     let startDate = req.body.StartDate;
-    let endDate = req.body.EndDate;
+    let endDate = req.body.EndDate;    
     await roomService.rentARoom(userId, roomId, startDate, endDate);
     res.end()
   });
 
-router.delete('/', jsonParser, async function(req, res, next) {
+router.delete('/', checkIfAuthorized, jsonParser, async function(req, res, next) {
   let id = req.body.id;
   await roomService.deleteRoom(id);
   res.end()

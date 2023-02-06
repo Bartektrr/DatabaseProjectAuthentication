@@ -1,3 +1,4 @@
+require('dotenv').config()
 var express = require('express');
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
@@ -23,7 +24,7 @@ passport.use(new LocalStrategy(function verify(username, password, cb) {
 
 passport.serializeUser(function(user, cb) {
   process.nextTick(function() {
-    cb(null, { id: user.id, username: user.Username });
+    cb(null, { id: user.id, username: user.Username, role: user.Role });
   });
 });
 
@@ -35,7 +36,8 @@ passport.deserializeUser(function(user, cb) {
 
 var router = express.Router();
 router.get('/login', function(req, res, next) {
-  res.render('login');
+  const username = req.user?.username;
+  res.render('login', { username });
 });
 router.post('/login/password', passport.authenticate('local', {
   successReturnToOrRedirect: '/',
